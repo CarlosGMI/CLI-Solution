@@ -3,3 +3,5 @@ Lib/
 Scripts/
 tcl/
 pip-selfcheck.json
+__pycache__/
+CLISolution.egg-info/
