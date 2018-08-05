@@ -17,7 +17,7 @@ def copyFilesInTextFile(files,name,path):
 @click.command()
 @click.argument('path_to_read', type=click.Path(exists=True))
 @click.option('--name', '-n', help='El nombre del archivo txt donde se guardarán los nombres de los archivos analizados',
-                type=click.File('wb'), default=click.File('result.txt'))
+                default='result.txt')
 @click.option('--path', '-p', help='La ruta específica donde se guardará el archivo txt', type=click.Path(exists=True),
                 default=path.join(path.join(environ['USERPROFILE']), 'Desktop') )
 def main(path_to_read, name, path):
