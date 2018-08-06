@@ -1,5 +1,6 @@
 #Librerías a utilizar
 import click
+import errno
 from os import listdir, environ, path
 from os.path import isfile, join, exists
 
@@ -22,6 +23,11 @@ def copyFilesInTextFile(files,name,path):
             for f in bar:
                 textFile.write(f+'\n')
         textFile.close()
+    except IOError as e:
+        if e.errno == errno.EACCES:
+            raise click.ClickException('No tienes permiso de escritura en {}'.format(path))
+        elif e.errno == errno.EIO:
+            raise click.ClickException('{} está protegido contra escritura'.format(path))
     except:
         raise click.ClickException("Ha ocurrido algún error durante la creación del archivo")
         
