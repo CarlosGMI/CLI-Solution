@@ -47,6 +47,11 @@ def validateFile(path, name):
 @click.option('--path', '-p', help='La ruta específica donde se guardará el archivo txt. Por defecto la ruta es en el escritorio', type=click.Path(exists=True, file_okay=False),
                 default=path.join(path.join(environ['USERPROFILE']), 'Desktop'))
 def main(path_to_read, name, path):
+    """Este script toma la ruta de algun directorio (PATH_TO_READ) y lee todos los archivos que ahi se encuentran para posteriormente copiar sus
+    nombres en un archivo de texto (.txt) (-n) y guardarlo en una ruta (-p). Este archivo de texto puede ser especificado asi como la ruta 
+    donde puede guardarlo.
+
+    PATH_TO_READ: path o ruta del directorio que desea analizar"""
     validateFile(path, name)
     copyFilesInTextFile(readPath(path_to_read),name,path)
 
