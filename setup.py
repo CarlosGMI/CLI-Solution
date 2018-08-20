@@ -4,7 +4,7 @@ setup(
     name = 'CLISolution',
     version = '0.1',
     py_modules = ['CLISolution'],
-    install_requires = ['Click'],
+    install_requires = ['Click','eyed3'],
     entry_points = '''
         [console_scripts]
         cliS=CLISolution:main
