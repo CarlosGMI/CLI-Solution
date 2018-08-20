@@ -1,10 +1,11 @@
 #Librerías a utilizar
 import click
 import eyed3
-from eyed3 import mp3
+from eyed3 import mp3, id3
 import errno
 from os import listdir, environ, path
 from os.path import isfile, join, exists
+import traceback
 
 __author__ = "Carlos Maldonado"
 
@@ -32,23 +33,34 @@ def separateFileExtension(path,files):
         if f.endswith('.mp3'):
             mp3Files.append(f)
         else:
-            otherFiles.append(f)
+            if not f.endswith('jpg'):
+                otherFiles.append(f)
     return(mp3Files,otherFiles)
 
 def copyFilesInTextFile(pathToRead,files,name,path):
     try:
-        textFile = open(join(path,name),'w')
+        textFile = open(join(path,name),'w', encoding='utf-8')
         mp3Files, otherFiles = separateFileExtension(pathToRead,files)
         textFile.write('==========================================CANCIONES==========================================\n')
         for f in mp3Files:
-            audio = eyed3.load(join(pathToRead,f))
+            eyed3.log.setLevel("ERROR")
+            tag = id3.Tag()
+            tag.parse(join(pathToRead,f))
+            """ if(tag.artist is not None):
+                print("Artista: "+tag.artist)
+            else:
+                print("Artista: NO TIENE TAG") """
+            """ if(tag.title is not None):
+                print("Nombre: "+tag.title+"\n========================")
+            else:
+                print("Nombre: NO TIENE TAG \n========================") """
             textFile.write('  - Nombre del archivo: '+f+'\n')
-            if audio.tag.title:
-                textFile.write('  - Titulo: '+audio.tag.title+'\n')
+            if tag.title is not None:
+                textFile.write('  - Titulo: '+tag.title+'\n')
             else:
                 textFile.write('  - Titulo: --\n')
-            if audio.tag.artist:
-                textFile.write('  - Artista: '+audio.tag.artist+'\n')
+            if tag.artist is not None:
+                textFile.write('  - Artista: '+tag.artist+'\n')
             else:
                 textFile.write('  - Artista: --\n')
             textFile.write('=================================================================================\n')
@@ -61,8 +73,11 @@ def copyFilesInTextFile(pathToRead,files,name,path):
             raise click.ClickException('No tienes permiso de escritura en {}'.format(path))
         elif e.errno == errno.EIO:
             raise click.ClickException('{} está protegido contra escritura'.format(path))
-    except:
-        raise click.ClickException("Ha ocurrido algún error durante la creación del archivo")
+    except Exception as e:
+        #traceback.print_exc()
+        print("Error: {}".format(str(e)))
+        pass
+        #raise click.ClickException("Ha ocurrido algún error durante la creación del archivo ----> {}".format(s))
         
 def validateFile(path, name):
     if not name.endswith('.txt'):
